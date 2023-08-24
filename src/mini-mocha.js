@@ -1,6 +1,6 @@
 let count = 0;
 let testNumber = 0;
-const errorList = [];
+const inidvidualErro = [];
 
 const codeToError = {
   ERR_ASSERTION: 'AssertionError',
@@ -14,31 +14,35 @@ const log = ({ message, startIdent = 1, CRLF = true }) => {
   console.log(`${ident} ${message}${CRLF ? '\n' : ''}`);
 };
 
-const throwFailedTest = ({ error, description }) => {
+const throwFailedTest = ({ error, description, startIdent }) => {
   const errorMessage = codeToError[error.code];
   const { code, actual, operator, expected } = error;
   const finalMessage = `${errorMessage} [${code}]: ${actual} ${operator} ${expected}`;
-  log({ message: `${description}:` });
-  log({ message: finalMessage, startIdent: 5 });
+  log({ message: `${description}:`, startIdent });
+  log({ message: finalMessage, startIdent: startIdent + 5 });
 };
 
 global.describe = function (suite, fn) {
-  log({ message: suite });
+  const depth = this.depth ? this.depth: 1;
+  log({ message: suite, startIdent: this.depth, CRLF: false });
+  this.depth = depth + 2;
   fn()
 };
 
 global.it = function (description, fn) {
   testNumber++;
+  const depth = this.depth ? this.depth: 1;
   try {
     fn();
     count++;
-    log({ message: `✓ ${description}` });
+    log({ message: `✓ ${description}`, startIdent: depth });
   } catch (e) {
     errorList.push({
       description: `${testNumber}) ${description}`,
+      startIdent: depth,
       error: e,
     });
-    log({ message: `${testNumber}) ${description}` });
+    log({ message: `${testNumber}) ${description}`, startIdent: depth });
   }
 };
 
