@@ -22,16 +22,20 @@ const throwFailedTest = ({ error, description }) => {
   log({ message: finalMessage, startIdent: 5 });
 };
 
+global.describe = function (suite, fn) {
+  log({ message: suite });
+  fn()
+};
+
 global.it = function (description, fn) {
   testNumber++;
-  const descriptionWithNumber = `${testNumber}) ${description}`;
   try {
     fn();
     count++;
     log({ message: `✓ ${description}` });
   } catch (e) {
     errorList.push({
-      description: descriptionWithNumber,
+      description: `${testNumber}) ${description}`,
       error: e,
     });
     log({ message: `${testNumber}) ${description}` });
