@@ -1,7 +1,17 @@
 {
-  "name": "node-starter",
-  "version": "0.0.0",
+  "name": "mini-mocha",
+  "version": "1.0.0",
+  "license": "UNLICENSED",
+  "author": {
+    "name": "Shahar Talmi",
+    "email": "shahart@wix.com"
+  },
+  "main": "src/mini-mocha.js",
+  "bin": "src/mini-mocha.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
+  },
+  "devDependencies": {
+    "mocha": "^5.0.1"
   }
 }
