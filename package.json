@@ -9,7 +9,7 @@
   "main": "src/mini-mocha.js",
   "bin": "src/mini-mocha.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha --watch"
   },
   "devDependencies": {
     "mocha": "^5.0.1"

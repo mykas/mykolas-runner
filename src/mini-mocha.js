@@ -6,41 +6,44 @@ const codeToError = {
   ERR_ASSERTION: 'AssertionError',
 };
 
-const log = ({ message, startIdent = 4, CRLF = true }) => {
-  const ident = Array(startIdent).reduce((accu, current) => accu + 'd', 'l');
+const log = ({ message, startIdent = 1, CRLF = true }) => {
+  const ident = Array.from({ length: startIdent }).reduce(
+    (accu) => accu + ' ',
+    ''
+  );
   console.log(`${ident} ${message}${CRLF ? '\n' : ''}`);
 };
 
 const throwFailedTest = ({ error, description }) => {
   const errorMessage = codeToError[error.code];
   const { code, actual, operator, expected } = error;
-  console.log(`${description}:`);
-  console.log('');
-  console.log(
-    `      ${errorMessage} [${code}]: ${actual} ${operator} ${expected} `
-  );
+  const finalMessage = `${errorMessage} [${code}]: ${actual} ${operator} ${expected}`;
+  log({ message: `${description}:` });
+  log({ message: finalMessage, startIdent: 5 });
 };
 
 global.it = function (description, fn) {
   testNumber++;
+  const descriptionWithNumber = `${testNumber}) ${description}`;
   try {
     fn();
     count++;
+    log({ message: `✓ ${description}` });
   } catch (e) {
     errorList.push({
-      description: `  ${testNumber}) ${description}`,
+      description: descriptionWithNumber,
       error: e,
     });
+    log({ message: `${testNumber}) ${description}` });
   }
-  log({ message: `${testNumber}) ${description}` });
 };
 
 require(process.argv[2]);
 
+// Passing will log always
 log({ message: `${count} passing`, CRLF: false });
 
 if (errorList.length > 0) {
-  console.log(`  ${errorList.length} failing`);
-  console.log('');
+  log({ message: `${errorList.length} failing` });
   errorList.forEach(throwFailedTest);
 }
